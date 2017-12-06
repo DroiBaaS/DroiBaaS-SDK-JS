@@ -17,5 +17,4 @@ __export(require("./droi-file"));
 __export(require("./droi-preference"));
 __export(require("./droi-cloudcache"));
 __export(require("./droi-group"));
-var DroiPolyFill = require("./droi-polyfill");
-DroiPolyFill.setupPolyfill();
+require('./droi-polyfill');

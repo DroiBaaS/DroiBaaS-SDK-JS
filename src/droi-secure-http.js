@@ -81,6 +81,7 @@ var IpList = /** @class */ (function () {
         var req = new droi_http_1.DroiHttpRequest();
         req.url = droi_const_1.DroiConstant.IP_LIST_URL + "?appid=" + appId;
         req.method = droi_http_1.DroiHttpMethod.GET;
+        req.isBinary = false;
         return droi_http_1.DroiHttp.sendRequest(req).then(function (resp) {
             if (resp.status != 200)
                 throw new droi_error_1.DroiError(droi_error_1.DroiError.SERVER_NOT_REACHABLE, "http statue: " + resp.status);
@@ -416,6 +417,7 @@ var DroiHttpSecure = /** @class */ (function () {
                         req.method = request.method;
                         req.url = DroiHttpSecure.getURLWithRequest(request, ipElement);
                         req.headers = JSON.parse(JSON.stringify(request.headers));
+                        req.isBinary = true;
                         kid = TUTIL.getKlKeyID().toString();
                         ktype = TUTIL.getKlKeyType();
                         kver = TUTIL.getKlKeyVersion();
@@ -577,6 +579,7 @@ var DroiHttpSecure = /** @class */ (function () {
         request.method = droi_http_1.DroiHttpMethod.POST;
         request.data = Buffer.from(data.buffer);
         request.headers = headers;
+        request.isBinary = true;
         return droi_http_1.DroiHttp.sendRequest(request).then(function (resp) {
             var droiStatus = -999;
             if (resp.headers[droi_const_1.DroiConstant.HTTP_HEADER_DROI_STATUS.toLowerCase()])

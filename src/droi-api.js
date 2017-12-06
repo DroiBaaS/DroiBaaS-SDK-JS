@@ -140,6 +140,7 @@ var RemoteServiceHelper;
                         request.method = method;
                         request.data = input;
                         request.headers = headers;
+                        request.isBinary = false;
                         return [4 /*yield*/, appendDefaultHeaders(request, tokenHolder)];
                     case 1:
                         _a.sent();
@@ -167,6 +168,7 @@ var RemoteServiceHelper;
                         request.method = method;
                         request.data = input;
                         request.headers = headers;
+                        request.isBinary = true;
                         return [4 /*yield*/, appendDefaultHeaders(request, tokenHolder)];
                     case 1:
                         _a.sent();
@@ -186,6 +188,7 @@ var RemoteServiceHelper;
             var request = new droi_http_1.DroiHttpRequest();
             request.url = FETCH_DEVICE_ID_URL;
             request.method = droi_http_1.DroiHttpMethod.GET;
+            request.isBinary = false;
             return droi_http_1.DroiHttp.sendRequest(request)
                 .then(function (response) {
                 // let regex = /.*\[\"([0-9A-Z]+)\",\s*(\d+)/g;

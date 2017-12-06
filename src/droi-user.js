@@ -72,7 +72,7 @@ var DroiUser = /** @class */ (function (_super) {
     };
     DroiUser.loadUserCache = function () {
         var jstr = droi_persist_settings_1.DroiPersistSettings.getItem(droi_persist_settings_1.DroiPersistSettings.KEY_SAVED_USER);
-        if (jstr == null)
+        if (jstr == null || jstr.length == 0)
             return null;
         var jdata = JSON.parse(jstr);
         var obj = droi_object_1.DroiObject.fromJson(JSON.parse(jdata.userData));

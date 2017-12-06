@@ -1,6 +1,9 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 function setupPolyfill() {
+    var __global = this;
+    if (typeof global !== 'undefined')
+        __global = global;
+    else if (typeof window !== 'undefined')
+        __global = window;
     if (!String.prototype.repeat) {
         String.prototype.repeat = function (count) {
             if (this == null) {
@@ -53,8 +56,28 @@ function setupPolyfill() {
     if (typeof localStorage === 'undefined') {
         if (typeof global !== 'undefined') {
             var storage = require('dom-storage');
-            global['localStorage'] = new storage('./data.json', { strict: true });
+            global["localStorage"] = new storage("data.json", { strict: true });
         }
     }
+    if (typeof Buffer === 'undefined') {
+        __global["Buffer"] = require('buffer');
+    }
+    if (typeof atob === 'undefined') {
+        __global['atob'] = function (str) {
+            return new Buffer(str, 'base64').toString('binary');
+        };
+    }
+    if (typeof btoa === 'undefined') {
+        __global['btoa'] = function (str) {
+            var buffer;
+            if (str instanceof Buffer) {
+                buffer = str;
+            }
+            else {
+                buffer = new Buffer(str.toString(), 'binary');
+            }
+            return buffer.toString('base64');
+        };
+    }
 }
-exports.setupPolyfill = setupPolyfill;
+setupPolyfill();

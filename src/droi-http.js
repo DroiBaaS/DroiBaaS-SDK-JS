@@ -31,8 +31,10 @@ var DroiHttp = /** @class */ (function () {
     function DroiHttp() {
     }
     DroiHttp.sendRequest = function (request) {
-        var req = Request(request.method, request.url)
-            .responseType("arraybuffer");
+        var req = Request(request.method, request.url);
+        // let req = Request('POST', 'http://localhost:5432');
+        if (request.isBinary)
+            req.responseType("arraybuffer");
         // req.set('X-Path', request.url);
         // req.set('X-Method', request.method);
         // let body = {}
@@ -52,7 +54,11 @@ var DroiHttp = /** @class */ (function () {
         droi_log_1.DroiLog.d(DroiHttp.LOG_TAG, "  Input: " + request.data);
         return req
             .then(function (resp) {
-            var text = TUTIL.bytes_to_string(new Uint8Array(resp.body));
+            var text;
+            if (request.isBinary)
+                text = TUTIL.bytes_to_string(new Uint8Array(resp.body));
+            else
+                text = resp.text;
             droi_log_1.DroiLog.d(DroiHttp.LOG_TAG, " Output: " + text);
             var response = new DroiHttpResponse();
             response.status = resp.status;

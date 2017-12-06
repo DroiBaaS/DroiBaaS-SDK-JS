@@ -6,7 +6,7 @@ var droi_user_1 = require("./droi-user");
 var droi_file_1 = require("./droi-file");
 var droi_object_1 = require("./droi-object");
 var droi_group_1 = require("./droi-group");
-var version = "1.0.38";
+var version = "1.0.54";
 /**
  *
  */
@@ -30,7 +30,7 @@ var DroiCore = /** @class */ (function () {
         DroiCore.appId = appid;
         DroiCore.apiKey = apikey;
         droi_object_1.DroiObject.registerCreateFactory("_User", function () { return droi_user_1.DroiUser.createUser(); });
-        droi_object_1.DroiObject.registerCreateFactory("_File", function () { return droi_file_1.DroiFile.createFile(); });
+        droi_object_1.DroiObject.registerCreateFactory("_File", function () { return droi_file_1.DroiFile.createEmptyFile(); });
         droi_object_1.DroiObject.registerCreateFactory("_Group", function () { return droi_group_1.DroiGroup.createGroup(); });
     };
     /**

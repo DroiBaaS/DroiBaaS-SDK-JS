@@ -77,6 +77,9 @@ var DroiFile = /** @class */ (function (_super) {
         }
         return _this;
     }
+    DroiFile.createEmptyFile = function () {
+        return DroiFile.createFile();
+    };
     DroiFile.createFile = function (buffer, name, mimeType) {
         if (buffer === void 0) { buffer = null; }
         if (name === void 0) { name = null; }
