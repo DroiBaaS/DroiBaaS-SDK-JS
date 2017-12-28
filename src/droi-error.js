@@ -16,8 +16,8 @@ var DroiError = /** @class */ (function () {
      */
     function DroiError(code, msg, ticket) {
         this._code = code;
-        this._appendMessage = msg;
-        this._ticket = ticket;
+        this._appendMessage = msg || "";
+        this._ticket = ticket || "";
     }
     DroiError.fillMessages = function () {
         var result = {};
@@ -142,9 +142,9 @@ var DroiError = /** @class */ (function () {
         var message = DroiError.MESSAGES[this._code];
         if (!message)
             message = "Error code: " + this._code;
-        if (this._ticket)
+        if (this._ticket != "")
             message = message + " Ticket: " + this._ticket;
-        if (this._appendMessage)
+        if (this._appendMessage != "")
             message = message + " " + this._appendMessage;
         return message;
     };

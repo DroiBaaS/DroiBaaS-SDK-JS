@@ -69,7 +69,8 @@ var RestFile = /** @class */ (function () {
             .field("x:SessionId", sessionId)
             .attach("file", buffer, { filename: name, contentType: mimeType })
             .on("progress", function (event) {
-            if (progressCB != null)
+            // console.log(`${event.loaded} / ${event.total} (${event.percent}). ${event.direction}`);
+            if (progressCB != null && event.direction === 'upload')
                 progressCB(event.loaded, event.total);
         });
         return req.then(function (resp) {

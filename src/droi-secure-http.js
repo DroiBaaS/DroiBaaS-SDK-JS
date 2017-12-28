@@ -55,6 +55,7 @@ var droi_persist_settings_1 = require("./droi-persist-settings");
 var droi_log_1 = require("./droi-log");
 var UINT = require("cuint");
 var droi_const_1 = require("./droi-const");
+var utf8 = require('utf8');
 var TUTIL = TUTILNS.TUTIL();
 var IpElement = /** @class */ (function () {
     function IpElement() {
@@ -368,7 +369,7 @@ var DroiHttpSecure = /** @class */ (function () {
                         isCompressed = true;
                         // Compress data
                         if (request.data != null) {
-                            dataBuffer = TUTIL.string_to_bytes(request.data);
+                            dataBuffer = TUTIL.string_to_bytes(utf8.encode(request.data));
                             inputBuffer = TUTIL.compressDeflater(dataBuffer);
                             if (inputBuffer == null) {
                                 error = new droi_error_1.DroiError(droi_error_1.DroiError.ERROR, "compress fail.");
@@ -528,7 +529,7 @@ var DroiHttpSecure = /** @class */ (function () {
                                 if (outEncoding.indexOf("gzip") > 0) {
                                     decBuffer = TUTIL.decompress(decBuffer);
                                 }
-                                resp.data = TUTIL.bytes_to_string(decBuffer);
+                                resp.data = utf8.decode(TUTIL.bytes_to_string(decBuffer));
                             }
                         }
                         catch (error) {

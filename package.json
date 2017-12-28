@@ -1,6 +1,6 @@
 {
   "name": "droibaas-jssdk",
-  "version": "1.0.54",
+  "version": "1.0.56",
   "description": "DroiBaaS JavaScript SDK",
   "main": "./src/index.js",
   "browser": "./droi-baas-min.js",
@@ -18,9 +18,11 @@
     "sha256": "^0.2.0",
     "superagent": "^3.8.1",
     "ts-md5": "^1.2.2",
-    "zlibjs": "^0.3.1"
+    "zlibjs": "^0.3.1",
+    "utf8": "^3.0.0"
   },
   "devDependencies": {
+    "chai": "^4.1.2",
     "express": "^4.16.2",
     "mocha": "^4.0.1"
   }

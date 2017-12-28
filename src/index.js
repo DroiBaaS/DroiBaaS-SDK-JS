@@ -17,4 +17,5 @@ __export(require("./droi-file"));
 __export(require("./droi-preference"));
 __export(require("./droi-cloudcache"));
 __export(require("./droi-group"));
+__export(require("./droi-log"));
 require('./droi-polyfill');
