@@ -85,6 +85,35 @@ var DroiUser = /** @class */ (function (_super) {
         droi_persist_settings_1.DroiPersistSettings.removeItem(droi_persist_settings_1.DroiPersistSettings.KEY_SAVED_USER);
         DroiUser.currentUser = null;
     };
+    DroiUser.setCurrentUserToken = function (userObjId, sessionToken) {
+        return __awaiter(this, void 0, void 0, function () {
+            var fakeUser, dobj, user, error_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        fakeUser = DroiUser.createUser();
+                        fakeUser.session = { Token: sessionToken, ExpiredAt: new Date((Date.now() + 2952000000)).toISOString() };
+                        DroiUser.currentUser = fakeUser;
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 3, , 4]);
+                        return [4 /*yield*/, DroiUser.fetch("_User", userObjId)];
+                    case 2:
+                        dobj = _a.sent();
+                        user = DroiUser.createUser();
+                        user.cloneFrom(dobj);
+                        user.session = fakeUser.session;
+                        DroiUser.currentUser = user;
+                        DroiUser.saveUserCache(user);
+                        return [2 /*return*/, Promise.resolve(user)];
+                    case 3:
+                        error_1 = _a.sent();
+                        return [2 /*return*/, Promise.reject(error_1)];
+                    case 4: return [2 /*return*/];
+                }
+            });
+        });
+    };
     DroiUser.getCurrentUser = function () {
         if (DroiUser.currentUser != null)
             return DroiUser.currentUser;
@@ -119,6 +148,7 @@ var DroiUser = /** @class */ (function (_super) {
                                 var juser = jlogin["Data"];
                                 var user = droi_object_1.DroiObject.fromJson(juser);
                                 user.session = { Token: token, ExpiredAt: expired };
+                                DroiUser.currentUser = user;
                                 DroiUser.saveUserCache(user);
                                 return user;
                             })];

@@ -22,13 +22,13 @@ var RestCloudCache = /** @class */ (function () {
             return result;
         });
     };
-    RestCloudCache.prototype.set = function (key, value, ttl) {
+    RestCloudCache.prototype.set = function (key, value) {
+        if (key == null || value == null)
+            return Promise.reject(new index_1.DroiError(index_1.DroiError.INVALID_PARAMETER, "key/value empty"));
         var secureAvaiable = droi_secure_http_1.DroiHttpSecure.isEnable();
         var url = (secureAvaiable ? RestCloudCache.REST_HTTPS_SECURE : RestCloudCache.REST_HTTPS) + "/" + key;
         var callServer = secureAvaiable ? droi_api_1.RemoteServiceHelper.callServerSecure : droi_api_1.RemoteServiceHelper.callServer;
-        ttl = ttl || 180;
-        var body = { TTL: ttl, Value: value };
-        return callServer(url, droi_http_1.DroiHttpMethod.PUT, JSON.stringify(body), null, null).then(function (result) {
+        return callServer(url, droi_http_1.DroiHttpMethod.PUT, value, null, null).then(function (result) {
             return new index_1.DroiError(index_1.DroiError.OK);
         });
     };

@@ -7,8 +7,8 @@ var DroiCloudCache = /** @class */ (function () {
     DroiCloudCache.getValue = function (key) {
         return cloudcache_1.RestCloudCache.instance().get(key);
     };
-    DroiCloudCache.setValue = function (key, value, ttl) {
-        return cloudcache_1.RestCloudCache.instance().set(key, value, ttl);
+    DroiCloudCache.setValue = function (key, value) {
+        return cloudcache_1.RestCloudCache.instance().set(key, value);
     };
     DroiCloudCache.removeValue = function (key) {
         return cloudcache_1.RestCloudCache.instance().remove(key);

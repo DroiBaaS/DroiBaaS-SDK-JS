@@ -30,11 +30,12 @@ var RestObject = /** @class */ (function () {
             return true;
         });
     };
-    RestObject.prototype.query = function (table, where, offset, limit, order) {
+    RestObject.prototype.query = function (table, where, offset, limit, order, countOnly) {
+        if (countOnly === void 0) { countOnly = false; }
         var secureAvaiable = droi_secure_http_1.DroiHttpSecure.isEnable();
         var url = "" + (secureAvaiable ? RestObject.REST_HTTPS_SECURE : RestObject.REST_HTTPS) + RestObject.REST_OBJECT_URL + "/" + table;
         var callServer = secureAvaiable ? droi_api_1.RemoteServiceHelper.callServerSecure : droi_api_1.RemoteServiceHelper.callServer;
-        var queryStrings = RestObject.generatorQueryString(where, offset, limit, order);
+        var queryStrings = RestObject.generatorQueryString(where, offset, limit, order, countOnly);
         if (!secureAvaiable)
             queryStrings = queryStrings + "&include_depth=3";
         if (queryStrings !== "")
@@ -86,7 +87,8 @@ var RestObject = /** @class */ (function () {
             return true;
         });
     };
-    RestObject.generatorQueryString = function (where, offset, limit, order) {
+    RestObject.generatorQueryString = function (where, offset, limit, order, countOnly) {
+        if (countOnly === void 0) { countOnly = false; }
         var queryStrings = "";
         if (where)
             queryStrings = queryStrings + "where=" + encodeURIComponent(where) + "&";
@@ -96,6 +98,8 @@ var RestObject = /** @class */ (function () {
             queryStrings = queryStrings + "limit=" + limit + "&";
         if (order)
             queryStrings = queryStrings + "order=" + encodeURIComponent(order) + "&";
+        if (countOnly)
+            queryStrings = queryStrings + "count=true&";
         return (queryStrings.length > 0) ? queryStrings.substring(0, queryStrings.length - 1) : queryStrings;
     };
     RestObject.REST_OBJECT_URL = "/objects/v2";

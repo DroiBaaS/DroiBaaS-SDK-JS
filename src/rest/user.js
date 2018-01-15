@@ -35,11 +35,12 @@ var RestUser = /** @class */ (function () {
             return true;
         });
     };
-    RestUser.prototype.query = function (table, where, offset, limit, order) {
+    RestUser.prototype.query = function (table, where, offset, limit, order, countOnly) {
+        if (countOnly === void 0) { countOnly = false; }
         var secureAvaiable = droi_secure_http_1.DroiHttpSecure.isEnable();
         var url = (secureAvaiable ? RestUser.REST_HTTPS_SECURE : RestUser.REST_HTTPS) + "/" + RestUser.REST_USER_URL;
         var callServer = secureAvaiable ? droi_api_1.RemoteServiceHelper.callServerSecure : droi_api_1.RemoteServiceHelper.callServer;
-        var queryStrings = object_1.RestObject.generatorQueryString(where, offset, limit, order);
+        var queryStrings = object_1.RestObject.generatorQueryString(where, offset, limit, order, countOnly);
         if (!secureAvaiable)
             queryStrings = queryStrings + "&include_depth=3";
         if (queryStrings !== "")

@@ -35,7 +35,7 @@ var DroiQuery = /** @class */ (function () {
             if (res.length <= 0)
                 throw new droi_error_1.DroiError(droi_error_1.DroiError.ERROR);
             var counter = res[0];
-            return counter;
+            return Number(counter);
         });
     };
     DroiQuery.prototype.runQuery = function () {

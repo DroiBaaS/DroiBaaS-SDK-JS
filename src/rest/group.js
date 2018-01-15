@@ -22,11 +22,12 @@ var RestGroup = /** @class */ (function () {
             return true;
         });
     };
-    RestGroup.prototype.query = function (table, where, offset, limit, order) {
+    RestGroup.prototype.query = function (table, where, offset, limit, order, countOnly) {
+        if (countOnly === void 0) { countOnly = false; }
         var secureAvaiable = droi_secure_http_1.DroiHttpSecure.isEnable();
         var url = "" + (secureAvaiable ? RestGroup.REST_HTTPS_SECURE : RestGroup.REST_HTTPS) + RestGroup.REST_GROUP_URL;
         var callServer = secureAvaiable ? droi_api_1.RemoteServiceHelper.callServerSecure : droi_api_1.RemoteServiceHelper.callServer;
-        var queryStrings = object_1.RestObject.generatorQueryString(where, offset, limit, order);
+        var queryStrings = object_1.RestObject.generatorQueryString(where, offset, limit, order, countOnly);
         if (!secureAvaiable)
             queryStrings = queryStrings + "&include_depth=3";
         if (queryStrings !== "")

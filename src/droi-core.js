@@ -6,7 +6,7 @@ var droi_user_1 = require("./droi-user");
 var droi_file_1 = require("./droi-file");
 var droi_object_1 = require("./droi-object");
 var droi_group_1 = require("./droi-group");
-var version = "1.0.56";
+var version = "1.0.80";
 /**
  *
  */

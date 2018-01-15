@@ -35,6 +35,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+var object_1 = require("./rest/object");
 var droi_const_1 = require("./droi-const");
 var droi_permission_1 = require("./droi-permission");
 var droi_error_1 = require("./droi-error");
@@ -64,6 +65,22 @@ var DirtyFlag;
     DirtyFlag[DirtyFlag["DIRTY_FLAG_REFERENCE"] = 2] = "DIRTY_FLAG_REFERENCE";
 })(DirtyFlag || (DirtyFlag = {}));
 ;
+var BulkList = /** @class */ (function () {
+    function BulkList() {
+        this.objs = [];
+        this.dataSize = 0;
+    }
+    BulkList.prototype.addDroiObject = function (obj) {
+        var jsonStr = obj.toJson();
+        this.objs.push(JSON.parse(jsonStr));
+        this.dataSize += encodeURIComponent(jsonStr).replace(/%[A-F\d]{2}/g, 'U').length;
+    };
+    BulkList.prototype.addObjectId = function (objId) {
+        this.objs.push(objId);
+        this.dataSize += encodeURIComponent(objId).replace(/%[A-F\d]{2}/g, 'U').length + 3;
+    };
+    return BulkList;
+}());
 /**
  *
  */
@@ -166,7 +183,149 @@ var DroiObject = /** @class */ (function () {
         return this.properties[keyName];
     };
     DroiObject.saveAll = function (items) {
-        return null;
+        return __awaiter(this, void 0, void 0, function () {
+            var groups, _i, items_1, obj, error_1, tableName, objs, bulkList, restObject, _a, _b, _c, tableName, objs, _d, objs_1, bulkList, jobj, error_2;
+            return __generator(this, function (_e) {
+                switch (_e.label) {
+                    case 0:
+                        groups = {};
+                        _i = 0, items_1 = items;
+                        _e.label = 1;
+                    case 1:
+                        if (!(_i < items_1.length)) return [3 /*break*/, 8];
+                        obj = items_1[_i];
+                        if (!(DroiObject.getDepth(obj, 0) > 0)) return [3 /*break*/, 6];
+                        _e.label = 2;
+                    case 2:
+                        _e.trys.push([2, 4, , 5]);
+                        return [4 /*yield*/, obj.save()];
+                    case 3:
+                        _e.sent();
+                        return [3 /*break*/, 5];
+                    case 4:
+                        error_1 = _e.sent();
+                        return [2 /*return*/, Promise.reject(error_1)];
+                    case 5: return [3 /*break*/, 7];
+                    case 6:
+                        obj.checkDirtyFlags();
+                        if (!obj.isDirty)
+                            return [3 /*break*/, 7];
+                        tableName = obj.tableName();
+                        objs = null;
+                        if (groups.hasOwnProperty(tableName))
+                            objs = groups[tableName];
+                        else {
+                            objs = [new BulkList()];
+                            groups[tableName] = objs;
+                        }
+                        bulkList = objs[objs.length - 1];
+                        if (bulkList.dataSize > 409600) {
+                            bulkList = new BulkList();
+                            objs.push(bulkList);
+                        }
+                        bulkList.addDroiObject(obj);
+                        _e.label = 7;
+                    case 7:
+                        _i++;
+                        return [3 /*break*/, 1];
+                    case 8:
+                        restObject = object_1.RestObject.instance();
+                        _a = [];
+                        for (_b in groups)
+                            _a.push(_b);
+                        _c = 0;
+                        _e.label = 9;
+                    case 9:
+                        if (!(_c < _a.length)) return [3 /*break*/, 16];
+                        tableName = _a[_c];
+                        objs = groups[tableName];
+                        _d = 0, objs_1 = objs;
+                        _e.label = 10;
+                    case 10:
+                        if (!(_d < objs_1.length)) return [3 /*break*/, 15];
+                        bulkList = objs_1[_d];
+                        jobj = { "Objects": bulkList.objs };
+                        _e.label = 11;
+                    case 11:
+                        _e.trys.push([11, 13, , 14]);
+                        return [4 /*yield*/, restObject.bulkUpsert(tableName, JSON.stringify(jobj))];
+                    case 12:
+                        _e.sent();
+                        return [3 /*break*/, 14];
+                    case 13:
+                        error_2 = _e.sent();
+                        return [2 /*return*/, Promise.reject(error_2)];
+                    case 14:
+                        _d++;
+                        return [3 /*break*/, 10];
+                    case 15:
+                        _c++;
+                        return [3 /*break*/, 9];
+                    case 16: return [2 /*return*/, Promise.resolve(new droi_error_1.DroiError(droi_error_1.DroiError.OK))];
+                }
+            });
+        });
+    };
+    DroiObject.deleteAll = function (items) {
+        return __awaiter(this, void 0, void 0, function () {
+            var groups, _i, items_2, obj, tableName, objs, bulkList, restObject, _a, _b, _c, tableName, objs, _d, objs_2, bulkList, jobj, error_3;
+            return __generator(this, function (_e) {
+                switch (_e.label) {
+                    case 0:
+                        groups = {};
+                        for (_i = 0, items_2 = items; _i < items_2.length; _i++) {
+                            obj = items_2[_i];
+                            tableName = obj.tableName();
+                            objs = null;
+                            if (groups.hasOwnProperty(tableName))
+                                objs = groups[tableName];
+                            else {
+                                objs = [new BulkList()];
+                                groups[tableName] = objs;
+                            }
+                            bulkList = objs[objs.length - 1];
+                            if (bulkList.dataSize > 1024) {
+                                bulkList = new BulkList();
+                                objs.push(bulkList);
+                            }
+                            bulkList.addObjectId(obj.objectId());
+                        }
+                        restObject = object_1.RestObject.instance();
+                        _a = [];
+                        for (_b in groups)
+                            _a.push(_b);
+                        _c = 0;
+                        _e.label = 1;
+                    case 1:
+                        if (!(_c < _a.length)) return [3 /*break*/, 8];
+                        tableName = _a[_c];
+                        objs = groups[tableName];
+                        _d = 0, objs_2 = objs;
+                        _e.label = 2;
+                    case 2:
+                        if (!(_d < objs_2.length)) return [3 /*break*/, 7];
+                        bulkList = objs_2[_d];
+                        jobj = { "IDs": bulkList.objs };
+                        _e.label = 3;
+                    case 3:
+                        _e.trys.push([3, 5, , 6]);
+                        return [4 /*yield*/, restObject.bulkDelete(tableName, JSON.stringify(jobj))];
+                    case 4:
+                        _e.sent();
+                        return [3 /*break*/, 6];
+                    case 5:
+                        error_3 = _e.sent();
+                        return [2 /*return*/, Promise.reject(error_3)];
+                    case 6:
+                        _d++;
+                        return [3 /*break*/, 2];
+                    case 7:
+                        _c++;
+                        return [3 /*break*/, 1];
+                    case 8: return [2 /*return*/, Promise.resolve(new droi_error_1.DroiError(droi_error_1.DroiError.OK))];
+                }
+            });
+        });
     };
     DroiObject.fetch = function (tableName, objectId) {
         return droi_query_internal_1.DroiQueryInternal.create(tableName).where(droi_condition_1.DroiCondition.cond(droi_const_1.DroiConstant.DROI_KEY_JSON_OBJECTID, droi_const_1.DroiConstant.DroiCondition_EQ, objectId)).runQuery().then(function (res) {
@@ -223,6 +382,7 @@ var DroiObject = /** @class */ (function () {
                         return [3 /*break*/, 3];
                     case 2:
                         e_1 = _a.sent();
+                        console.log(e_1);
                         error = void 0;
                         if (e_1 instanceof droi_error_1.DroiError)
                             error = e_1;
@@ -411,6 +571,29 @@ var DroiObject = /** @class */ (function () {
         //
         if (dobject != null)
             cb(dobject);
+    };
+    DroiObject.getDepth = function (obj, depth) {
+        if (depth > 3)
+            return 3;
+        if (obj == null || typeof obj !== "object")
+            return depth;
+        var nowDepth = depth;
+        if (obj instanceof Array) {
+            for (var _i = 0, obj_2 = obj; _i < obj_2.length; _i++) {
+                var item = obj_2[_i];
+                var newDepth = (item instanceof DroiObject) ? nowDepth + 1 : nowDepth;
+                depth = Math.max(depth, DroiObject.getDepth(item, newDepth));
+            }
+        }
+        else if (obj instanceof Object) {
+            var objs = (obj instanceof DroiObject) ? obj.properties : obj;
+            for (var key in objs) {
+                var subObj = objs[key];
+                var newDepth = (subObj instanceof DroiObject) ? nowDepth + 1 : nowDepth;
+                depth = Math.max(depth, DroiObject.getDepth(subObj, newDepth));
+            }
+        }
+        return depth;
     };
     //
     DroiObject.exportProperties = function (obj, depth, withReference) {

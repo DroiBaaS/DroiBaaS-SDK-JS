@@ -111,7 +111,14 @@ var CloudStorageDataProvider = /** @class */ (function () {
             offset = commands.get(droi_const_1.DroiConstant.DroiQuery_OFFSET)[0];
         if (commands.containsKey(droi_const_1.DroiConstant.DroiQuery_LIMIT))
             limit = commands.get(droi_const_1.DroiConstant.DroiQuery_LIMIT)[0];
-        return restHandler.query(tableName, where, offset, limit, order).then(function (jResult) {
+        var countOnly = commands.containsKey(droi_const_1.DroiConstant.DroiQuery_COUNT);
+        return restHandler.query(tableName, where, offset, limit, order, countOnly).then(function (jResult) {
+            // Return count only
+            if (countOnly && typeof jResult["Count"] !== 'undefined') {
+                var count = jResult["Count"];
+                delete jResult["Count"];
+                return [count];
+            }
             var result = [];
             for (var _i = 0, jResult_1 = jResult; _i < jResult_1.length; _i++) {
                 var jobj = jResult_1[_i];

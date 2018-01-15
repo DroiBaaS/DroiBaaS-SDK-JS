@@ -148,7 +148,12 @@ var RemoteServiceHelper;
                                 var error = translateDroiError(response);
                                 if (!error.isOk)
                                     throw error;
-                                return JSON.parse(response.data).Result;
+                                // hardcode for count
+                                var res = JSON.parse(response.data);
+                                if (typeof res["Count"] !== "undefined" && typeof res["Result"] !== "undefined") {
+                                    res.Result["Count"] = res["Count"];
+                                }
+                                return res.Result;
                             })];
                 }
             });
@@ -176,7 +181,12 @@ var RemoteServiceHelper;
                                 var error = translateDroiError(response);
                                 if (!error.isOk)
                                     throw error;
-                                return JSON.parse(response.data).Result;
+                                // hardcode for count
+                                var res = JSON.parse(response.data);
+                                if (typeof res["Count"] !== "undefined" && typeof res["Result"] !== "undefined") {
+                                    res.Result["Count"] = res["Count"];
+                                }
+                                return res.Result;
                             })];
                 }
             });
