@@ -43,7 +43,7 @@ var DroiQuery = /** @class */ (function () {
             this.throwIfTheCommandInvalid();
         }
         catch (e) {
-            return Promise.reject(new droi_error_1.DroiError(droi_error_1.DroiError.ERROR, e.message));
+            return Promise.reject(new droi_error_1.DroiError(droi_error_1.DroiError.ERROR, e));
         }
         // 
         var dp = droi_cloud_storage_data_provider_1.CloudStorageDataProvider.create();

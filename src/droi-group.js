@@ -18,6 +18,7 @@ var DroiGroup = /** @class */ (function (_super) {
     function DroiGroup(name) {
         var _this = _super.call(this, "_Group") || this;
         _this.fetchReady = false;
+        _this.setClassName("DroiGroup");
         if (name) {
             _this.Name = name;
         }

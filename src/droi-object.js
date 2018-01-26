@@ -88,8 +88,9 @@ var DroiObject = /** @class */ (function () {
     function DroiObject(tableName) {
         this.properties = {};
         this.dirtyFlags = DirtyFlag.DIRTY_FLAG_BODY;
-        // createdTime, modifiedTime
+        // createdTime, modifiedTime        
         var currentDate = new Date();
+        this.mTableName = tableName;
         this.properties[droi_const_1.DroiConstant.DROI_KEY_JSON_CLASSNAME] = tableName;
         this.properties[droi_const_1.DroiConstant.DROI_KEY_JSON_OBJECTID] = Guid.newGuid().replace(/-/g, "").substring(8);
         this.properties[droi_const_1.DroiConstant.DROI_KEY_JSON_CREATION_TIME] = currentDate.toISOString();
@@ -97,13 +98,13 @@ var DroiObject = /** @class */ (function () {
     }
     /**
      * Create DroiObject instance by specific table name
-     * @param tableName Table name of collection
+     * @param className Class name of collection
      */
-    DroiObject.createObject = function (tableName) {
-        if (DroiObject.factoryies.hasOwnProperty(tableName)) {
-            return DroiObject.factoryies[tableName]();
+    DroiObject.createObject = function (className) {
+        if (DroiObject.factoryies.hasOwnProperty(className)) {
+            return DroiObject.factoryies[className]();
         }
-        return new DroiObject(tableName);
+        return new DroiObject(className);
     };
     /**
      * The object Id of DroiObject
@@ -125,13 +126,13 @@ var DroiObject = /** @class */ (function () {
         return res;
     };
     DroiObject.prototype.tableName = function () {
-        return this.properties[droi_const_1.DroiConstant.DROI_KEY_JSON_CLASSNAME];
+        return this.mTableName;
+    };
+    DroiObject.prototype.setClassName = function (className) {
+        this.properties[droi_const_1.DroiConstant.DROI_KEY_JSON_CLASSNAME] = className;
     };
     DroiObject.prototype.setValue = function (keyName, value) {
-        if (keyName == droi_const_1.DroiConstant.DROI_KEY_JSON_OBJECTID ||
-            keyName == droi_const_1.DroiConstant.DROI_KEY_JSON_CREATION_TIME ||
-            keyName == droi_const_1.DroiConstant.DROI_KEY_JSON_MODIFIED_TIME ||
-            keyName == droi_const_1.DroiConstant.DROI_KEY_JSON_CLASSNAME)
+        if (DroiObject.INTERNAL_KEYS.indexOf(keyName) >= 0)
             return;
         if (value == null) {
             // Check whether the data is in properties
@@ -173,12 +174,11 @@ var DroiObject = /** @class */ (function () {
             this.properties[keyName] = val;
         }
     };
+    DroiObject.prototype.getKeys = function () {
+        return Object.keys(this.properties).filter(function (v) { return DroiObject.INTERNAL_KEYS.indexOf(v) == -1; });
+    };
     DroiObject.prototype.getValue = function (keyName) {
-        if (keyName == droi_const_1.DroiConstant.DROI_KEY_JSON_OBJECTID ||
-            keyName == droi_const_1.DroiConstant.DROI_KEY_JSON_CREATION_TIME ||
-            keyName == droi_const_1.DroiConstant.DROI_KEY_JSON_MODIFIED_TIME ||
-            keyName == droi_const_1.DroiConstant.DROI_KEY_JSON_CLASSNAME ||
-            this.properties[keyName] === undefined)
+        if (DroiObject.INTERNAL_KEYS.indexOf(keyName) >= 0 || this.properties[keyName] == undefined)
             return null;
         return this.properties[keyName];
     };
@@ -501,8 +501,9 @@ var DroiObject = /** @class */ (function () {
                 jobj[droi_const_1.DroiConstant.DROI_KEY_JSON_OBJECTID] !== undefined &&
                 jobj[droi_const_1.DroiConstant.DROI_KEY_JSON_CREATION_TIME] !== undefined &&
                 jobj[droi_const_1.DroiConstant.DROI_KEY_JSON_MODIFIED_TIME] !== undefined) {
-                var tableName = jobj[droi_const_1.DroiConstant.DROI_KEY_JSON_CLASSNAME];
+                var tableName = jobj[droi_const_1.DroiConstant.DROI_KEY_JSON_CLASSNAME]; // ????
                 // TODO: Check tableName
+                // The tableName is set by creation factory..
                 var r = DroiObject.createObject(tableName);
                 // Copy the key-Value into object
                 for (var keyName in jobj) {
@@ -639,10 +640,11 @@ var DroiObject = /** @class */ (function () {
         }
         throw new Error("Unable to copy obj! Its type isn't supported.");
     };
-    DroiObject.registerCreateFactory = function (tableName, factory) {
-        DroiObject.factoryies[tableName] = factory;
+    DroiObject.registerCreateFactory = function (className, factory) {
+        DroiObject.factoryies[className] = factory;
     };
     DroiObject.TIME_SHIFT = 0;
+    DroiObject.INTERNAL_KEYS = [droi_const_1.DroiConstant.DROI_KEY_JSON_OBJECTID, droi_const_1.DroiConstant.DROI_KEY_JSON_CREATION_TIME, droi_const_1.DroiConstant.DROI_KEY_JSON_MODIFIED_TIME, droi_const_1.DroiConstant.DROI_KEY_JSON_CLASSNAME];
     DroiObject.factoryies = {};
     return DroiObject;
 }());

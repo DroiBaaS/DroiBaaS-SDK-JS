@@ -222,7 +222,7 @@ var RemoteServiceHelper;
                 switch (_c.label) {
                     case 0:
                         request.headers[droi_const_1.DroiConstant.DROI_KEY_HTTP_APP_ID] = droi_core_1.DroiCore.getAppId();
-                        if (!droi_secure_http_1.DroiHttpSecure.isEnable())
+                        if (!droi_secure_http_1.DroiHttpSecure.isEnable() && Object.keys(request.headers).indexOf(droi_const_1.DroiConstant.DROI_KEY_HTTP_API_KEY) == -1)
                             request.headers[droi_const_1.DroiConstant.DROI_KEY_HTTP_API_KEY] = droi_core_1.DroiCore.getApiKey();
                         _c.label = 1;
                     case 1:

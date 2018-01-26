@@ -54,16 +54,18 @@ var droi_const_1 = require("./droi-const");
 var sha256 = require("sha256");
 var DroiUser = /** @class */ (function (_super) {
     __extends(DroiUser, _super);
-    function DroiUser() {
+    function DroiUser(className) {
         var _this = _super.call(this, "_User") || this;
+        className = className || "DroiUser";
         _this.session = null;
         _this.setValue(DroiUser.KEY_ENABLE, true);
         _this.setValue(DroiUser.KEY_EMAIL_VERIFIED, false);
         _this.setValue(DroiUser.KEY_PHONE_VERIFIED, false);
+        _this.setClassName(className);
         return _this;
     }
-    DroiUser.createUser = function () {
-        return new DroiUser();
+    DroiUser.createUser = function (className) {
+        return new DroiUser(className);
     };
     DroiUser.saveUserCache = function (user) {
         var userData = user.toJson();
@@ -75,9 +77,7 @@ var DroiUser = /** @class */ (function (_super) {
         if (jstr == null || jstr.length == 0)
             return null;
         var jdata = JSON.parse(jstr);
-        var obj = droi_object_1.DroiObject.fromJson(JSON.parse(jdata.userData));
-        var user = DroiUser.createUser();
-        user.cloneFrom(obj);
+        var user = droi_object_1.DroiObject.fromJson(JSON.parse(jdata.userData));
         user.session = jdata.session;
         return user;
     };
@@ -130,7 +130,7 @@ var DroiUser = /** @class */ (function (_super) {
                 switch (_e.label) {
                     case 0:
                         user = DroiUser.getCurrentUser();
-                        if (user != null && user.isLoggedIn) {
+                        if (user != null && user.isLoggedIn()) {
                             return [2 /*return*/, Promise.reject(new droi_error_1.DroiError(droi_error_1.DroiError.USER_ALREADY_LOGIN))];
                         }
                         user = DroiUser.createUser();
@@ -167,9 +167,7 @@ var DroiUser = /** @class */ (function (_super) {
         }
         return user_1.RestUser.instance().loginUser(userId, sha256(password))
             .then(function (jresult) {
-            var user = DroiUser.createUser();
-            var obj = droi_object_1.DroiObject.fromJson(jresult["Data"]);
-            user.cloneFrom(obj);
+            var user = droi_object_1.DroiObject.fromJson(jresult["Data"]);
             user.session = { Token: jresult["Token"], ExpiredAt: jresult["ExpiredAt"] };
             DroiUser.saveUserCache(user);
             DroiUser.currentUser = user;
@@ -188,9 +186,7 @@ var DroiUser = /** @class */ (function (_super) {
         }
         return user_1.RestUser.instance().loginOTP(otpCode, type, JSON.parse(user.toJson()))
             .then(function (jdata) {
-            var user = DroiUser.createUser();
-            var obj = droi_object_1.DroiObject.fromJson(jdata["Data"]);
-            user.cloneFrom(obj);
+            var user = droi_object_1.DroiObject.fromJson(jdata["Data"]);
             user.session = { Token: jdata["Token"], ExpiredAt: jdata["ExpiredAt"] };
             DroiUser.saveUserCache(user);
             DroiUser.currentUser = user;

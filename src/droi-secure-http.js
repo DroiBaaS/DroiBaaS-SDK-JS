@@ -303,7 +303,7 @@ var DroiHttpSecure = /** @class */ (function () {
     };
     DroiHttpSecure.sendRequest = function (request) {
         return __awaiter(this, void 0, void 0, function () {
-            var appId, error, ipList, err_1, response, rb_error, retryTimes, err_2, ipElement, method, dataBuffer, inputBuffer, isCompressed, keyInvalid, timeValid, headerTimestamp, uidu_1, uidl_1, refreshResult, req, kid, ktype, kver, rsaver, uidu, uidl, dataLen, encoding, headerTs, encBuffer, resp, err_3, status_1, droiStatus, drid, outEncoding, outData, needRetry, decBuffer;
+            var appId, error, ipList, err_1, response, rb_error, retryTimes, err_2, ipElement, method, dataBuffer, inputBuffer, isCompressed, keyInvalid, timeValid, headerTimestamp, uidu_1, uidl_1, refreshResult, req, kid, ktype, kver, rsaver, uidu, uidl, dataLen, encoding, headerTs, encBuffer, oriKey, resp, err_3, status_1, droiStatus, drid, outEncoding, outData, needRetry, decBuffer;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -438,6 +438,7 @@ var DroiHttpSecure = /** @class */ (function () {
                         headerTs = TUTIL.getTimeStampHeader();
                         req.headers[droi_const_1.DroiConstant.HTTP_HEADER_DROI_TS] = headerTs;
                         encBuffer = null;
+                        oriKey = TUTIL.klKeyGet();
                         if (inputBuffer != null) {
                             encBuffer = DroiHttpSecure.encodeBuffer(inputBuffer, headerTs);
                             // Encrypt fail. Clear cache key and retry again.
@@ -524,6 +525,7 @@ var DroiHttpSecure = /** @class */ (function () {
                         }
                         try {
                             if (outData != null) {
+                                TUTIL.klKeyAlloc(oriKey);
                                 encBuffer = TUTIL.string_to_bytes(outData);
                                 decBuffer = TUTIL.aesDecrypt(encBuffer);
                                 if (outEncoding.indexOf("gzip") > 0) {
